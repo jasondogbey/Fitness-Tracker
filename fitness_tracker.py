@@ -25,18 +25,45 @@ class User:
         self.age = age
         self.weight = weight
         self.workouts = []
+        self.goals = {
+            "calories_goal": 0,
+            "workouts_goal": 0,
+            "duration_goal": 0
+        }
     
+    def set_calories_goal(self, calories):
+        self.goals['calories_goal'] = calories
+    
+    def set_workouts_goal(self, workouts):
+        self.goals['workouts_goal'] = workouts
+    
+    def set_duration_goal(self, duration):
+        self.goals['duration_goal'] = duration
+
     def create_workout_plan(self, workout):
         self.workouts.append(workout)
 
     def track_progress(self):
         total_calories_burned = 0
+        total_workouts_completed = len(self.workouts)
+        total_duration = 0
+
         for workout in self.workouts:
             total_calories_burned += workout.total_calories_burned()
-        return total_calories_burned
 
-    def set_goals(self):
-        pass
+            for exercise in workout.exercises:
+                total_duration += exercise['duration']
+
+        if total_calories_burned >= self.goals['calories_goal']:
+            print(f"Congratulations, {self.name}! You have achieved your calories goal")
+        
+        if total_workouts_completed >= self.goals['workouts_goal']:
+            print(f"Congratulations, {self.name}! You have achieved your workouts goal")
+        
+        if total_duration >= self.goals['duration_goal']:
+            print(f"Congratulations, {self.name}! You have achieved your duration goal")
+
+        return total_calories_burned, total_workouts_completed, total_duration
 
 
 # Creating exercises
@@ -53,6 +80,11 @@ my_workout.add_exercise(exercise3, 15)  # Jumping Jacks for 15 minutes
 user1 = User("Alice", 30, 150)
 user1.create_workout_plan(my_workout)
 
+user1.set_calories_goal(300)
+user1.set_workouts_goal(5)
+user1.set_duration_goal(120)
+
 # Tracking progress
-calories_burned = user1.track_progress()
-print(f"{user1.name} has burned {calories_burned} calories.")
+calories_burned, workouts_completed, total_duration = user1.track_progress()
+print(f"{user1.name} has burned {calories_burned} calories, completed {workouts_completed} workouts, "
+      f"and exercised for a total duration of {total_duration} minutes.")
